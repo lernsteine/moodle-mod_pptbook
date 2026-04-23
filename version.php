@@ -29,7 +29,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_pptbook';
-$plugin->version   = 2025110100; // YYYYMMDDXX.
-$plugin->release   = '1.1.0';
+$plugin->version   = 2026042300; // YYYYMMDDXX.
+$plugin->release   = '1.1.1';
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->requires  = 2023100900; // Moodle 4.3+.

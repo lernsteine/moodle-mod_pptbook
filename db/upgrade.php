@@ -15,8 +15,6 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
-defined('MOODLE_INTERNAL') || die();
-
  * Upgrade script for mod_pptbook.
  *
  * @package   mod_pptbook
@@ -24,6 +22,8 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2025 Ralf Hagemeister
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die();
 /**
  * Execute mod_pptbook upgrades between versions.
  * @param int $oldversion

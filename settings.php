@@ -25,9 +25,5 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-if ($hassiteconfig) {
-    // Create the settings page. Add options here if needed in the future.
-    $settings = new admin_settingpage('modsettingpptbook', get_string('pluginname', 'mod_pptbook'));
-
-    $ADMIN->add('modsettings', $settings);
-}
+// Moodle creates and registers the activity settings page automatically.
+// Leave $settings unchanged to avoid registering the page twice.

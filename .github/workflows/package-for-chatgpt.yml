@@ -1,0 +1,66 @@
+name: Build Moodle plugin release ZIPs
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/package-for-chatgpt.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout PPT Book 1.1.3
+        uses: actions/checkout@v4
+        with:
+          repository: lernsteine/moodle-mod_pptbook
+          ref: baf8644a73c0c43ecce11c82e4cdf16697e53bd4
+          path: src/pptbook
+
+      - name: Checkout Team Dashboard 1.1.2
+        uses: actions/checkout@v4
+        with:
+          repository: lernsteine/moodle-block_teamdashboard
+          ref: 1228000c593a4b7980342c057f6cff4e123de53b
+          path: src/teamdashboard
+
+      - name: Checkout Master Dashboard 1.2.2
+        uses: actions/checkout@v4
+        with:
+          repository: lernsteine/moodle-block_masterdashboard
+          ref: 7cb994c8e5a768f3e38e539b8b6ff514cff9bd86
+          path: src/masterdashboard
+
+      - name: Package as Moodle installable ZIPs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist build
+          for plugin in pptbook teamdashboard masterdashboard; do
+            mkdir -p "build/$plugin"
+            rsync -a --exclude='.git/' --exclude='.github/' --exclude='.gitignore' --exclude='.gitattributes' \
+              --exclude='moodle-plugin-ci' --exclude='.moodle-plugin-ci.php' \
+              --exclude='composer.json' --exclude='composer.lock' \
+              "src/$plugin/" "build/$plugin/"
+          done
+          test -f build/pptbook/version.php
+          test -f build/teamdashboard/version.php
+          test -f build/masterdashboard/version.php
+          (cd build && zip -qr ../dist/mod_pptbook_1.1.3.zip pptbook)
+          (cd build && zip -qr ../dist/block_teamdashboard_1.1.2.zip teamdashboard)
+          (cd build && zip -qr ../dist/block_masterdashboard_1.2.2.zip masterdashboard)
+          for archive in dist/*.zip; do
+            unzip -t "$archive" | tail -1
+          done
+          sha256sum dist/*.zip
+
+      - name: Upload plugin installation archives
+        uses: actions/upload-artifact@v4
+        with:
+          name: moodle-5.3-installable-plugins-20261011
+          path: dist/*.zip
+          if-no-files-found: error
+          retention-days: 7
